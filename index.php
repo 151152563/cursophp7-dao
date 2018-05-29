@@ -45,12 +45,21 @@ $aluno->insert();
 echo $aluno;
 */
 
+//Atualiza os dados do usuario passando o id respectivo da alteração
+/*
 $usuario = new Usuario();
 
 $usuario->loadbyId(30);
 
 $usuario->update ("professor", "udemy");
 
+echo $usuario;
+*/
+
+$usuario = new Usuario();
+
+$usuario->loadbyId(3);
+$usuario->delete();
 echo $usuario;
 
  ?>
