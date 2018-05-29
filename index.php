@@ -19,7 +19,8 @@ echo $root;
 */
 
 //Carrega uma lista de usuarios
-/*$lista = Usuario::getList();
+/*
+$lista = Usuario::getList();
 
 echo json_encode($lista);
 */
@@ -35,5 +36,21 @@ echo json_encode($busca);
 $usuario->login ("jose","abcde");
 echo ($usuario);
 */
+
+//Cadastra um usuario passando apenas o login e senha
+//Por parametros
+/*
+$aluno = new Usuario("jogao", "feijao");
+$aluno->insert();
+echo $aluno;
+*/
+
+$usuario = new Usuario();
+
+$usuario->loadbyId(30);
+
+$usuario->update ("professor", "udemy");
+
+echo $usuario;
 
  ?>

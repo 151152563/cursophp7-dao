@@ -53,17 +53,13 @@ public function loadByID($id){
 
 	$sql = new Sql();
 
-	$result= $sql->select("SELECT * FROM tb_usuarios WHERE idusuario = :ID", array(":ID"=>$id
+	$results= $sql->select("SELECT * FROM tb_usuarios WHERE idusuario = :ID", array(":ID"=>$id
 	));
 
-	if (count($result) > 0) {
+	if (count($results) > 0) {
 
-		$row = $result[0];
+	$this->setData($results[0]);
 
-		$this->setIdusuario($row['idusuario']);
-		$this->setDeslogin($row['deslogin']);
-		$this->setDessenha($row['dessenha']);
-		$this->setDtcadastro(new DateTIme($row['dtcadastro']));
 	}
 }
 
@@ -101,17 +97,65 @@ public function login($login, $passsword){
 
 	if (count($result) > 0) {
 
-		$row = $result[0];
+		
 
-		$this->setIdusuario($row['idusuario']);
-		$this->setDeslogin($row['deslogin']);
-		$this->setDessenha($row['dessenha']);
-		$this->setDtcadastro(new DateTIme($row['dtcadastro']));
+		$this->setData($results[0]);
+
 	} else {
 
 		throw new Exception("Login e/ou senha inválidos.");
 		
 	}
+}
+//Para definir dados, Data-> De Dados...
+public function setData($data){
+		$this->setIdusuario($data['idusuario']);
+		$this->setDeslogin($data['deslogin']);
+		$this->setDessenha($data['dessenha']);
+		$this->setDtcadastro(new DateTIme($data['dtcadastro']));
+
+}
+//Para inserir um usuario no banco de dados
+//informando seu login e senha
+//A partir de uma procedure criada onde será informado os parametros que ela vai receber
+//
+public function insert(){
+
+	$sql = new Sql();
+	$results = $sql->select("CALL sp_usuarios_insert(:LOGIN, :PASSWORD)", array(
+		'LOGIN'=>$this->getDeslogin(),
+		'PASSWORD'=>$this->getDessenha()
+	));
+
+	if (count($results) > 0) {
+		$this->setData($results[0]);
+	}
+}
+
+public function update($login, $password){
+
+	$this->setDeslogin($login);
+	$this->setDessenha($password);
+
+	$sql = new Sql();
+
+	$sql->query("UPDATE tb_usuarios SET deslogin = :LOGIN, dessenha = :PASSWORD WHERE idusuario=:ID", array(
+		':LOGIN'=>$this->getDeslogin(),
+		':PASSWORD'=>$this->getDessenha(),
+		':ID'=>$this->getIdusuario()
+	));
+
+}
+
+
+
+//="" ele já alimenta com vazio e evita o erro de se tornar obrigatorio
+//Em metodos que não precisa passar parametros
+public function __construct($login="", $password=""){
+
+	$this->setDeslogin($login);
+	$this->setDessenha($password);
+
 }
 
 public function __toString(){
